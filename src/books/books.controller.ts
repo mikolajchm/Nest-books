@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Delete, Body, Post, Put} from '@nestjs/common';
+import { Controller, Get, Param, Delete, Body, Post, Put, UseGuards} from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDTO } from './dtos/create-book.dto';
 import { UpdateBookDTO } from './dtos/update-book.dto';
 import { ParseUUIDPipe } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { NotFoundException } from '@nestjs/common';
 
 @Controller('books')
@@ -22,11 +23,13 @@ export class BooksController {
     }
     
     @Post('/')
-    create(@Body() bookData: CreateBookDTO) {
-        return this.booksService.create(bookData);
-    } 
+    @UseGuards(JwtAuthGuard)
+      create(@Body() bookData: CreateBookDTO) {
+      return this.booksService.create(bookData);
+    }
     
     @Put('/:id')
+    @UseGuards(JwtAuthGuard)
     async update(
       @Param('id', new ParseUUIDPipe()) id: string,
       @Body() bookData: UpdateBookDTO,
@@ -39,6 +42,7 @@ export class BooksController {
     }
 
     @Delete('/:id')
+    @UseGuards(JwtAuthGuard)
     async deleteById(@Param('id', new ParseUUIDPipe()) id: string) {
       if (!(await this.booksService.getById(id)))
         throw new NotFoundException('404 not found');
