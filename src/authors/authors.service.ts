@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Author } from '@prisma/client';
 import { ConflictException } from '@nestjs/common';
-import { PrismaService } from 'src/shared/services/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthorsService {
